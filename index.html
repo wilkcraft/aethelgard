@@ -1,0 +1,770 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Aethelgard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      :root {
+        --fire: #ff6a00;
+        --water: #3fa9f5;
+        --earth: #7a5c3a;
+        --air: #cfefff;
+        --gold: #d4af37;
+        --bg: #0b0e1a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: system-ui, sans-serif;
+        background: radial-gradient(circle at top, #090b15, #1b2040);
+        color: #f4f4f4;
+        line-height: 1.7;
+      }
+
+      /* ---------- HERO ---------- */
+      header {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        background:
+          radial-gradient(
+            circle at center,
+            rgba(255, 255, 255, 0.1),
+            transparent 70%
+          ),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.8));
+      }
+
+      header h1 {
+        font-size: clamp(3rem, 6vw, 5rem);
+        letter-spacing: 0.2rem;
+        color: var(--gold);
+        text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+      }
+
+      header p {
+        max-width: 700px;
+        margin: 1.5rem auto;
+        font-size: 1.2rem;
+        opacity: 0.9;
+      }
+
+      header .scroll {
+        margin-top: 3rem;
+        font-size: 0.9rem;
+        opacity: 0.7;
+      }
+
+      /* ---------- SECTIONS ---------- */
+      section {
+        padding: 5rem 8vw;
+      }
+
+      section h2 {
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+        color: var(--gold);
+      }
+
+      section h3 {
+        margin-top: 2rem;
+        color: #ffd98a;
+      }
+
+      section p {
+        max-width: 1000px;
+        margin-bottom: 1rem;
+        opacity: 0.9;
+      }
+
+      h2 {
+        color: var(--gold);
+        font-size: 2.2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* ---------- CARDS ---------- */
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        cursor: pointer;
+        transition:
+          transform 0.3s,
+          box-shadow 0.3s;
+        position: relative;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          120deg,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .card:hover::before {
+        opacity: 1;
+      }
+
+      .card span {
+        font-weight: bold;
+      }
+
+      /* ---------- KINGDOM COLORS ---------- */
+
+      .fire {
+        border-left: 4px solid var(--fire);
+      }
+      .water {
+        border-left: 4px solid var(--water);
+      }
+      .earth {
+        border-left: 4px solid var(--earth);
+      }
+      .air {
+        border-left: 4px solid var(--air);
+      }
+
+      .more-info {
+        margin-top: 1rem;
+        background: none;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      .more-info:hover {
+        background: var(--gold);
+        color: #000;
+      }
+
+      /* ---------- MODAL ---------- */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        z-index: 999;
+      }
+
+      .modal.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .modal-content {
+        background: linear-gradient(180deg, #15182e, #0b0e1a);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 18px;
+        padding: 2rem;
+        max-width: 500px;
+        width: 90%;
+        animation: scaleIn 0.35s ease;
+        position: relative;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      @keyframes scaleIn {
+        from {
+          transform: scale(0.85);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .modal-content h3 {
+        color: var(--gold);
+        margin-bottom: 1rem;
+      }
+
+      .modal-content p {
+        opacity: 0.9;
+      }
+
+      #modalText p {
+        margin-bottom: 1rem;
+      }
+
+      #modalText strong {
+        color: var(--gold);
+      }
+
+      .close {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5rem;
+        cursor: pointer;
+        opacity: 0.7;
+      }
+
+      .close:hover {
+        opacity: 1;
+      }
+
+      /* ---------- TOGGLE ---------- */
+      .toggle {
+        margin-top: 2rem;
+      }
+
+      .toggle button {
+        background: none;
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        padding: 0.6rem 1.2rem;
+        border-radius: 999px;
+        cursor: pointer;
+        margin-right: 0.5rem;
+        transition:
+          background 0.3s,
+          color 0.3s;
+      }
+
+      .toggle button.active,
+      .toggle button:hover {
+        background: var(--gold);
+        color: #000;
+      }
+
+      /* ---------- FOOTER ---------- */
+      footer {
+        background: #070810;
+        padding: 3rem;
+        text-align: center;
+        font-size: 0.9rem;
+        opacity: 0.7;
+      }
+
+      /* ---------- FADE IN ---------- */
+      .fade {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.8s ease;
+      }
+
+      .fade.visible {
+        opacity: 1;
+        transform: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <div>
+        <h1>AETHELGARD</h1>
+        <p>
+          Un mundo donde la magia no es un don externo, sino una raíz noble que
+          sostiene la realidad.
+        </p>
+        <div class="scroll">⬇ Desciende y explora los reinos ⬇</div>
+      </div>
+    </header>
+
+    <section class="fade">
+      <h2>🌍 Estructura del Mundo</h2>
+      <p>
+        Aethelgard es un mundo esférico que orbita alrededor de
+        <strong>Solstis</strong>. Su rotación genera ciclos de día/noche y husos
+        horarios que afectan directamente a la activación de los poderes
+        elementales.
+      </p>
+      <p>
+        Los mercaderes utilizan relojes de arena encantados para sincronizar
+        tratos entre reinos, ya que una hora equivocada puede anular por
+        completo una habilidad mágica.
+      </p>
+    </section>
+
+    <section class="fade">
+      <h2>🧬 Jerarquía Social</h2>
+      <div class="cards">
+        <div class="card">
+          <span>Vinculados (Venas)</span>
+          <p>
+            Nacen con magia heredada. Para poder poseer el poder, al menos uno
+            de los padres debe ser un Vena. Si los padres pertenecen a reinos
+            distintos, el poder se decide al azar al nacer.
+          </p>
+        </div>
+
+        <div class="card">
+          <span>Áridos (Secos)</span>
+          <p>
+            Personas sin facultades mágicas. Son mayoría y sostienen la
+            economía, la artesanía y la administración técnica del mundo.
+          </p>
+        </div>
+
+        <div class="card">
+          <span>El Salto</span>
+          <p>
+            Caso raro y trágico en el que un hijo de dos Venas nace Seco. Se
+            considera una desgracia familiar y, en muchos reinos, una vergüenza
+            que se intenta ocultar.
+          </p>
+        </div>
+
+        <div class="card" data-brote="info">
+          <span>El Despertar (Brotes)</span>
+          <p>
+            Es un fenómeno extremadamente raro en el que un hijo de Secos tiene
+            poderes latentes. Esto ocurre cuando las líneas de sangre latentes
+            de ambos padres se alinean de forma inesperada. Son vistos como
+            milagros, amenazas o herejías según el reino. Muchos son abandonados
+            al nacer.
+          </p>
+
+          <button class="more-info">Más info</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="fade">
+      <h2>🔥💧🪨🌪️ Los Cuatro Reinos</h2>
+      <div class="cards">
+        <div class="card fire" data-kingdom="ignisarum">
+          <h3>Ignisarum</h3>
+          <p><strong>Poder:</strong> Pirokinesis</p>
+          <p>
+            Forjas eternas, volcanes activos y una sociedad rígida gobernada por
+            la sangre.
+          </p>
+          <button class="more-info">Más info</button>
+        </div>
+
+        <div class="card water" data-kingdom="aqualuna">
+          <h3>Aqualuna</h3>
+          <p><strong>Poder:</strong> Hidromaquia</p>
+          <p>
+            Teocracia lunar donde el agua cura, guía y domina las mareas del
+            mundo.
+          </p>
+          <button class="more-info">Más info</button>
+        </div>
+
+        <div class="card earth" data-kingdom="terrallum">
+          <h3>Terrallum</h3>
+          <p><strong>Poder:</strong> Geomancia</p>
+          <p>
+            Ciudades excavadas en montañas, donde el mérito vale más que la
+            sangre.
+          </p>
+          <button class="more-info">Más info</button>
+        </div>
+
+        <div class="card air" data-kingdom="venturia">
+          <h3>Venturia</h3>
+          <p><strong>Poder:</strong> Aeromancia</p>
+          <p>
+            Reinos flotantes y comercio extremo, con días cegadores y noches
+            heladas.
+          </p>
+          <button class="more-info">Más info</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="fade">
+      <h2>⚖️ Leyes, Economía y Eventos</h2>
+      <p>
+        <strong>La Ley del Equilibrio:</strong> Es un tratado antiguo que
+        prohíbe que un Vena use su poder contra un Seco desarmado, aunque esta
+        ley se rompe constantemente en las fronteras.
+      </p>
+      <p>
+        <strong>El Gran Eclipse:</strong> Un evento astronómico que ocurre cada
+        100 años donde todos los poderes se desvanecen por un día completo,
+        dejando a los reinos vulnerables y obligando a los magos a depender
+        totalmente de los Secos.
+      </p>
+    </section>
+
+    <section>
+      <h2>☠️ Poderes Prohibidos</h2>
+      <div class="cards">
+        <div class="card fire" data-power="calor">
+          🔥 Hurto del Calor<br />
+          <button class="more-info">Más info</button>
+        </div>
+        <div class="card water" data-power="sangre">
+          💧 Control de la Sangre<br />
+          <button class="more-info">Más info</button>
+        </div>
+        <div class="card earth" data-power="huesos">
+          🪨 Ruptura Ósea<br />
+          <button class="more-info">Más info</button>
+        </div>
+        <div class="card air" data-power="oxigeno">
+          🌪️ Vacío de Oxígeno<br />
+          <button class="more-info">Más info</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL -->
+    <div class="modal" id="modal">
+      <div class="modal-content">
+        <button class="close" id="close">✖</button>
+        <h3 id="modalTitle"></h3>
+        <div id="modalText"></div>
+      </div>
+    </div>
+
+    <section class="fade">
+      <h2>⚠️ El Sistema de Residuos (El Coste de la Magia)</h2>
+      <p>
+        <strong>La Fatiga Esencial:</strong> Usar el poder no es infinito. Los
+        Venas consumen su propia energía vital llamada
+        <strong>Caudal de Vida</strong>. Un uso excesivo puede convertir
+        temporalmente a un Vena en un Gris, que es alguien que pierde el color
+        de sus ojos y queda exhausto, incapaz de usar magia por días, semanas o
+        hasta meses.
+      </p>
+      <p>
+        <strong>Contaminación Elemental:</strong> En las zonas donde se practica
+        magia de alto nivel (como las forjas de Ignisarum o los templos de
+        Aqualuna), el entorno se altera:
+      </p>
+      <p>
+        - En Ignisarum existen las
+        <strong>Zonas de Cristalización</strong> donde el aire quema y el suelo
+        es de obsidiana cortante.
+      </p>
+      <p>
+        - En Aqualuna, <strong>Nieblas de Olvido</strong> donde pierdes la
+        memoria y la orientación hasta que salgas de la niebla.
+      </p>
+      <p>
+        - En Terrallum, <strong>Cicatrices de Pulso</strong> que son lugares en
+        que provocan vibración molecular haciendo que prácticamente todo lo que
+        entra termine desintegrándose.
+      </p>
+      <p>
+        - En Venturia, <strong>Vórtices de Vacío</strong> donde la gravedad
+        falla y puedes tener asfixias repentinas.
+      </p>
+    </section>
+
+    <section class="fade">
+      <h2>🌿 Flora y Fauna</h2>
+      <p>
+        <strong>Los Árboles Sifón (Vegetación):</strong> Árboles gigantes de corteza blanca que crecen en las fronteras entre reinos. Absorben los "residuos" de la magia cercana. Sus hojas cambian de color según el tipo de magia que predomina en el ambiente: si un Vena de Fuego pelea cerca, las hojas se vuelven naranjas y desprenden calor. Se usan como medio de teletransporte, ya que tiene una grieta con la que puedes ir de un árbol a otro. Al cruzar por uno de estos portales, la persona pierde un poco de su propia energía vital.
+      </p>
+      <p>
+        <strong>Mastines de Brasa (Ignisarum):</strong> Caninos sin pelaje cuya
+        piel brilla como el carbón encendido. Tienen la capacidad de rastrear el
+        calor de cualquier ser vivo, lo que los convierte en los rastreadores
+        perfectos.
+      </p>
+      <p>
+        <strong>Garzas Espejo (Aqualuna):</strong> Aves con plumaje de nácar que
+        refleja la luz lunar. Pueden crear espejismos de agua para ocultar sus
+        nidos o confundir a navegantes. Los cartógrafos Secos las siguen, ya que
+        estas aves solo anidan en lugares donde el agua es totalmente pura y
+        libre de contaminación.
+      </p>
+      <p>
+        <strong>Dracos de Viento (Venturia):</strong> Reptiles ligeros que no
+        vuelan con alas, sino que tienen sacos de aire internos. Los Venas de
+        Venturia los usan como monturas, impulsándolos con sus ráfagas.
+      </p>
+      <p>
+        <strong>Quimeras de Barro (Terrallum):</strong> Seres creados
+        artificialmente por Geomantes y Secos (ingenieros). Son estatuas de
+        piedra y arcilla que cobran vida mediante relojes de arena encantados.
+        Sirven como guardianes de las minas.
+      </p>
+    </section>
+
+    <section>
+      <h2>🍂 El Cónclave de la Ceniza</h2>
+      <p>
+        <strong>Quienes són:</strong> Es una organización clandestina formada por Grises permanentes (Venas que abusaron de su poder y perdieron su magia para siempre) y Secos resentidos que han descubierto una forma artificial de quitar magia. Su base de operaciones se encuentra en las Cicatrices de Pulso de Terrallum, donde el caos molecular oculta sus experimentos.
+      </p>
+      <p>
+        <strong>Su objetivo (La Gran Nivelación)</strong> Creen que el sistema de Venas y Secos es una tiranía biológica. Su objetivo es drenar el Solstis durante el próximo Gran Eclipse para redistribuir la magia de forma artificial, aunque eso signifique convertir a toda la población de Aethelgard en Grises o Secos permanentemente, excepto a ellos.
+      </p>
+      <p>
+        <strong>Los Cuatro Líderes</strong> Este cónclave tiene 4 líderes, y cada líder representa una versión retorcida de los poderes de los reinos.
+      </p>
+
+      <button class="more-info" data-leader="info">Más info</button>
+    </section>
+
+    <footer>
+      Aethelgard © Created by Wilkcraft — La magia siempre deja huella.
+    </footer>
+
+    <script>
+      /* FADE IN ON SCROLL */
+      const fades = document.querySelectorAll(".fade");
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("visible");
+            }
+          });
+        },
+        { threshold: 0.2 },
+      );
+
+      fades.forEach((f) => observer.observe(f));
+
+      const brotes = {
+        info: {
+          title: "El Despertar (Brotes)",
+          text: `
+<strong>El Origen: El Despertar de la Sangre Latente</strong>
+A diferencia de los Venas, cuyo poder es una corriente abierta y constante, los "Brotes" son el resultado de una alineación de linajes. En Aethelgard se cree que la magia nunca desaparece del todo de una línea familiar, sino que a veces se duerme para protegerse.
+
+<strong>Características únicas de los Brotes</strong>
+Aunque sus poderes son técnicamente los mismos que los de un Vena (Pirokinesis, Aeromancia, etc.), los Brotes presentan particularidades físicas y mágicas:
+ - Inestabilidad Inicial: Ya que la mayoría suelen no tener padres que les enseñen a controlar el flujo, sus primeros despertares suelen ser explosivos y peligrosos.
+ - La Marca del Renacido: Muchos Brotes nacen con una marca física pequeña que los distingue, como un mechón de pelo de color elemental (blanco nube, rojo ceniza, azul marino) o una mancha en la piel que brilla levemente cuando usan su poder.
+ - Resistencia a la Fatiga: Curiosamente, algunos estudios indican que los Brotes tardan más en convertirse en Grises (llegar a la Fatiga Esencial). Se teoriza que, al haber nacido de la sequía, su cuerpo es más eficiente ahorrando energía vital.
+`,
+        },
+      };
+
+      const kingdoms = {
+        ignisarum: {
+          title: "🔥 Ignisarum — El Trono de la Llama",
+          text: `
+<strong>Poder: Pirokinesis</strong>
+Pueden crear fuego con las manos, controlar incendios y resistir temperaturas altísimas. Son expertos herreros capaces de moldear metal ardiente con los dedos.
+
+<strong>Ubicación:</strong>
+Está en el oeste del continente, tiene llanuras áridas y volcanes activos.
+
+<strong>Sociedad:</strong>
+Monarquía hereditaria regida por leyes inmutables. Los nobles protegen sus tierras y los Venas más poderosos mantienen las forjas eternas, creando las mejores armas de Aethelgard.
+
+<strong>Dato curioso:</strong>
+Poseen los días más largos y calurosos del mundo.
+
+<strong>Ventana de activación:</strong>
+En la oscuridad total o en climas gélidos, su capacidad de generar fuego disminuye drásticamente.
+`,
+        },
+
+        aqualuna: {
+          title: "💧 Aqualuna — El Dominio de las Mareas",
+          text: `
+<strong>Poder: Hidromaquia</strong>
+Manipulan el agua, la extraen del aire y la usan para curar heridas y enfermedades.
+
+<strong>Ubicación:</strong>
+Un archipiélago de islas conectadas por puentes de cristal.
+
+<strong>Sociedad:</strong>
+Teocracia pacífica gobernada por Sumos Sacerdotes. Valoran el arte, la filosofía y la contemplación lunar. Sus Secos son los mejores navegantes y cartógrafos del mundo.
+
+<strong>Dato curioso:</strong>
+Sus poderes alcanzan su máximo durante la noche, bajo las tres lunas.
+
+<strong>Ventana de activación:</strong>
+Durante un día de sol intenso en el desierto, un hidromante podría verse incapaz de extraer agua del aire.
+`,
+        },
+
+        terrallum: {
+          title: "🪨 Terrallum — El Bastión de Piedra",
+          text: `
+<strong>Poder: Geomancia</strong>
+Controlan tierra, roca y metales minerales. Pueden sentir vibraciones y pisadas a kilómetros de distancia.
+
+<strong>Ubicación:</strong>
+Una vasta cordillera con ciudades excavadas en la montaña.
+
+<strong>Sociedad:</strong>
+Meritocracia absoluta. El más capaz gobierna, normalmente el mejor general o estratega. Los Secos tienen estatus casi igual al de los magos.
+
+<strong>Dato curioso:</strong>
+Es el reino donde magia e ingeniería trabajan en perfecta simbiosis.
+`,
+        },
+
+        venturia: {
+          title: "🌪️ Venturia — Los Reinos Flotantes",
+          text: `
+<strong>Poder: Aeromancia</strong>
+Crean ráfagas de viento y pueden flotar tras años de entrenamiento.
+
+<strong>Ubicación:</strong>
+Ciudades flotantes sobre el mar con pilares que rozan las nubes.
+
+<strong>Sociedad:</strong>
+Aristocracia comercial. El poder político pertenece a quienes controlan el comercio y las rutas aéreas.
+
+<strong>Dato curioso:</strong>
+El ciclo día/noche es extremo: días ardientes y noches gélidas que generan corrientes de aire que los aeromantes aprovechan.
+
+<strong>Ventana de activación:</strong>
+Un estancamiento atmosférico a una hora específica podría dejarlos "en tierra".
+`,
+        },
+      };
+
+      const powers = {
+        calor: {
+          title: "🔥 Hurto del Calor — Ignisarum",
+          text: "Permite extraer el calor corporal de un ser vivo en segundos. La víctima sufre una hipotermia extrema, provocando fallo orgánico y una muerte rápida. Su uso deja zonas muertas donde el aire se vuelve antinaturalmente frío.",
+        },
+        sangre: {
+          title: "💧 Control de la Sangre — Aqualuna",
+          text: "Manipula la sangre de cualquier ser vivo, anulando completamente su voluntad. Considerado el mayor sacrilegio lunar, pues convierte el don de curar en una herramienta de dominación absoluta.",
+        },
+        huesos: {
+          title: "🪨 Ruptura Ósea — Terrallum",
+          text: "Permite fracturar huesos a distancia mediante vibraciones internas. La muerte no siempre es inmediata, lo que convierte este poder en uno de los más crueles jamás registrados.",
+        },
+        oxigeno: {
+          title: "🌪️ Vacío de Oxígeno — Venturia",
+          text: "Crea una burbuja sin aire alrededor de la cabeza del objetivo. La asfixia ocurre en silencio absoluto, dejando el cuerpo intacto pero el entorno mágicamente contaminado.",
+        },
+      };
+
+      const leaders = {
+        info: {
+          title: "Los Cuatro Líderes",
+          text: `
+<strong>Ignis el Gélido (Ex-Ignisarum):</strong>
+- Perfil: Un Vena que sufrió la "Fatiga Esencial" definitiva. Sus ojos son grises y su cuerpo siempre está frío.
+- Poder/Arma: Ya que su cuerpo absorbe todo el calor, toda la magia de fuego que le lanzan hace que se enfríe el entorno hasta crear Zonas de Cristalización instantáneas.
+
+<strong>Selyne, la Tejedora de Icor (Ex-Aqualuna):</strong>
+- Perfil: Una ex-sacerdotisa que fue exiliada por investigar el Control de la Sangre para intentar curar a su hijo, que nació como un Seco.
+- Poder/Arma: No usa agua pura, sino agua contaminada por las Nieblas de Olvido. Puede beberse los recuerdos de sus enemigos y utiliza viales de sangre almacenada para saber con extrema precisión los movimientos de sus oponentes.
+
+<strong>Korgán, el Rompe-Huesos (Ex-Terrallum):</strong>
+- Perfil: Un ingeniero Seco que odia la meritocracia de su reino. Siente que los magos siempre tendrán ventaja por mucho que él trabaje.
+- Poder/Arma: Pilotar una Quimera de Barro colosal que él mismo diseñó. Ha integrado relojes de arena encantados ilegales que emiten la frecuencia de la Ruptura Ósea, permitiéndole pulverizar fortificaciones y ejércitos desde dentro de su armadura.
+
+<strong>Vaxas, el Arquitecto de Vacío (Ex-Venturia):</strong>
+- Perfil: Un antiguo noble aeromante que perdió su magia y sus alas tras un accidente en un Vórtice de Vacío.
+- Poder/Arma: Utiliza tecnología de aire comprimido y prótesis mecánicas. Ha perfeccionado el poder prohibido del Vacío de Oxígeno mediante máquinas, permitiéndole asfixiar ciudades enteras desde su aeronave personal, la Sombra de Solstis.
+`,
+        },
+      };
+
+      const modal = document.getElementById("modal");
+      const title = document.getElementById("modalTitle");
+      const text = document.getElementById("modalText");
+
+      document.querySelectorAll(".card").forEach((card) => {
+        const openModal = () => {
+          if (card.dataset.brote) {
+            const k = brotes[card.dataset.brote];
+            title.textContent = k.title;
+            text.innerHTML = k.text
+              .trim()
+              .split("\n\n")
+              .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+              .join("");
+            modal.classList.add("active");
+          }
+
+          if (card.dataset.power) {
+            const p = powers[card.dataset.power];
+            title.textContent = p.title;
+            text.textContent = p.text;
+            modal.classList.add("active");
+          }
+
+          if (card.dataset.kingdom) {
+            const k = kingdoms[card.dataset.kingdom];
+            title.textContent = k.title;
+            text.innerHTML = k.text
+              .trim()
+              .split("\n\n")
+              .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+              .join("");
+            modal.classList.add("active");
+          }
+        };
+
+        document.querySelectorAll("[data-leader]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const k = leaders[btn.dataset.leader];
+            title.textContent = k.title;
+            text.innerHTML = k.text
+              .trim()
+              .split("\n\n")
+              .map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+              .join("");
+            modal.classList.add("active");
+          });
+        });
+
+        // Click en la card
+        card.addEventListener("click", openModal);
+
+        // Click en el botón "Más info"
+        const btn = card.querySelector(".more-info");
+        if (btn) {
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation(); // evita doble click
+            openModal();
+          });
+        }
+      });
+
+      document.getElementById("close").onclick = () =>
+        modal.classList.remove("active");
+      modal.onclick = (e) => {
+        if (e.target === modal) modal.classList.remove("active");
+      };
+    </script>
+  </body>
+</html>
